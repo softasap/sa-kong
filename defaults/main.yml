@@ -1,0 +1,5 @@
+---
+# defaults file for sa-kong
+
+role_dir: "{{role_path}}"
+kong_version: "0.12.1"
