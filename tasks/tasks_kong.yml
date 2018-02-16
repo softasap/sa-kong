@@ -177,5 +177,6 @@
       state: started
       enabled: yes
     become: yes
+    when: docker_test is not defined
     notify:
       - restart kong
