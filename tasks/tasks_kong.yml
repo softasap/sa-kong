@@ -97,6 +97,7 @@
       owner: www-data
       group: www-data
     become: yes
+    when: docker_test is not defined
     tags:
       -kong
 
