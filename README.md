@@ -22,7 +22,7 @@ To be more precise, Kong is a Lua application running in Nginx and made possible
 This sets the foundations for a pluggable architecture, where Lua scripts (referred to as ”plugins”) can be enabled and executed at runtime. Because of this, we like to think of Kong as a paragon of microservice architecture: at its core, it implements database abstraction, routing and plugin management. Plugins can live in separate code bases and be injected anywhere into the request lifecycle, all in a few lines of code.
 
 
-![architecture](https://raw.githubusercontent.com/softasap/sa-kong/master/meta/kong-architecture.png "architecture")
+![architecture](https://raw.githubusercontent.com/softasap/sa-kong/master/meta/kong-architecture.jpg "architecture")
 
 
 

@@ -89,3 +89,93 @@
           -kong
 
     when: ansible_os_family == "Fedora"
+
+  - name: Ensure log directory owned by nginx user
+    file:
+      path: /usr/local/kong/logs
+      state: directory
+      owner: www-data
+      group: www-data
+    become: yes
+    tags:
+      -kong
+
+
+  - name: Kong | init.d upstart
+    template:
+      dest: /etc/init.d/kong
+      mode: 0751
+      src: "{{role_dir}}/templates/startup/initd.j2"
+    when: ansible_service_mgr == 'upstart'
+    become: yes
+    tags:
+      -kong
+
+
+  - name: Kong | systemd upstart
+    template:
+      dest: /etc/systemd/system/kong.service
+      mode: 0755
+      src: "{{role_dir}}/templates/startup/systemd.j2"
+    when: ansible_service_mgr == 'systemd'
+    become: yes
+    tags:
+      -kong
+
+  - name: Kong | default nginx config
+    template:
+      src: "{{role_dir}}/templates/kong/default_nginx.template.j2"
+      dest: /etc/kong/default_nginx.template
+      group: root
+      mode: 0644
+      owner: root
+    become: yes
+    notify:
+      - restart kong
+
+  - name: Kong | initialize kong config
+    copy:
+      src: "/etc/kong/kong.conf.default"
+      dest: /etc/kong/kong.conf
+      remote_src: yes
+      force: no
+      group: root
+      mode: 0644
+      owner: root
+    become: yes
+    notify:
+      - restart kong
+
+
+  - name: Kong | Patch default settings /etc/kong/kong.conf
+    lineinfile: dest=/etc/kong/kong.conf  regexp="{{item.regexp}}" line="{{item.line}}" insertafter="{{item.insertafter | default('EOF')}}"
+    with_items: "{{kong_default_properties | default([])}}"
+    notify: restart kong
+    become: yes
+    tags:
+     - kong
+
+  - name: Kong | Patch settings /etc/kong/kong.conf
+    lineinfile: dest=/etc/kong/kong.conf  regexp="{{item.regexp}}" line="{{item.line}}" insertafter="{{item.insertafter | default('EOF')}}"
+    with_items: "{{kong_properties | default([])}}"
+    notify: restart kong
+    become: yes
+    tags:
+     - kong
+
+  - name: Kong | Apply migrations
+    shell: kong migrations up
+    notify: restart kong
+    become: yes
+    when: docker_test is not defined
+    tags:
+     - kong
+
+  - name: Kong | Ensure Kong is running
+    service:
+      name: kong
+      state: started
+      enabled: yes
+    become: yes
+    notify:
+      - restart kong
