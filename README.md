@@ -25,6 +25,24 @@ This sets the foundations for a pluggable architecture, where Lua scripts (refer
 ![architecture](https://raw.githubusercontent.com/softasap/sa-kong/master/meta/kong-architecture.jpg "architecture")
 
 
+Note: community version of the kong comes w/o any UI. You might want to consider some opensource WEBUI, like https://github.com/PGBI/kong-dashboard or https://github.com/pantsel/konga/.
+
+Per our experience, https://github.com/PGBI/kong-dashboard uses more robust development and releasing processes, althouth konga looks more creatively.
+
+
+```shell
+# Install Kong Dashboard
+npm install -g kong-dashboard
+
+# Start Kong Dashboard
+kong-dashboard start --kong-url http://kong:8001
+
+# Start Kong Dashboard on a custom port
+kong-dashboard start \
+  --kong-url http://kong:8001 \
+  --port [port]
+```
+
 
 ```
   roles:
