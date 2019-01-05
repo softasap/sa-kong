@@ -2,7 +2,7 @@
 # defaults file for sa-kong
 
 role_dir: "{{role_path}}"
-kong_version: "0.12.1"
+kong_version: "1.0.0"
 
 kong_nginx_template: default_nginx.template
 
