@@ -16,8 +16,8 @@ platforms:
   #   #     auto_config: true    
   # - name: xenial
   #   box: ubuntu/xenial64
-  - name: bionic
-    box: ubuntu/bionic64
+  # - name: bionic
+  #   box: ubuntu/bionic64
     # interfaces:
     #   - network_name: public_network
     #     type: dhcp
@@ -26,8 +26,8 @@ platforms:
   #   box: centos/6    
   # - name: centos7
   #   box: centos/7
-  # - name: fedora28
-  #   box: generic/fedora28
+   - name: fedora28
+     box: generic/fedora28
   # - name: alpine
   #   box: generic/alpine28
 
