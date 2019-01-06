@@ -1,5 +1,5 @@
 ---
-  - debug: var="ansible_os_family"
+  - debug: msg="ansible_os_family={{ ansible_os_family }} ansible_distribution={{ ansible_distribution }}"
   - block:
 
       - name: Kong | Check if package is installed
@@ -59,7 +59,7 @@
         tags:
           -kong
 
-    when: ansible_os_family == "CentOS"
+    when: ansible_os_family == "RedHat" and ansible_distribution == "CentOS"
 
   - block:
 
@@ -99,7 +99,7 @@
         tags:
           -kong          
 
-    when: ansible_os_family == "RedHat"
+    when: ansible_os_family == "RedHat" and ansible_distribution != "CentOS"
 
   - name: Ensure log directory owned by nginx user
     file:
