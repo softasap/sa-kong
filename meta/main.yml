@@ -30,7 +30,10 @@ galaxy_info:
         - 7
     - name: Fedora
       versions:
-        - 25 
+        - 25
+        - 26
+        - 26
+        - 28
   galaxy_tags:
     - kong
     - ubuntu
