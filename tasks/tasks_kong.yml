@@ -15,10 +15,12 @@
         get_url:
           url="{{ kong_dist_url_debian }}"
           dest="/tmp/kong.deb"
+        retries: 3
+        register: result
+        until: result is not failed
         when: kong_check_deb.rc == 1
         tags:
           -kong
-
 
       - name: Kong | install package
         apt: deb="/tmp/kong.deb"
@@ -97,7 +99,7 @@
         become: true
         when: kong_check_rpm.rc == 1 and ansible_distribution_major_version > 25
         tags:
-          -kong          
+          -kong
 
     when: ansible_os_family == "RedHat" and ansible_distribution != "CentOS"
 
