@@ -82,7 +82,7 @@
           -kong
 
       - name: Kong | Install dependencies
-        yum:
+        dnf:
            name: libselinux-python
            state: present
         retries: 3
