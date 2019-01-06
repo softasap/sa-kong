@@ -81,15 +81,27 @@
         tags:
           -kong
 
-      - name: Kong | Install dependencies
+      - name: Kong | Install dependencies (1/2)
         dnf:
+           name: yum
+           state: present
+        retries: 3
+        register: result
+        until: result is not failed
+        become: true
+        when: kong_check_rpm.rc == 1 and ansible_distribution_major_version > "25"
+        tags:
+          -kong
+
+      - name: Kong | Install dependencies (2/2)
+        yum:
            name: libselinux-python
            state: present
         retries: 3
         register: result
         until: result is not failed
         become: true
-        when: kong_check_rpm.rc == 1
+        when: kong_check_rpm.rc == 1 and ansible_distribution_major_version > "25"
         tags:
           -kong
 
