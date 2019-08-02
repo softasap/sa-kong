@@ -2,8 +2,9 @@
 # defaults file for sa-kong
 
 role_dir: "{{role_path}}"
-kong_version: "1.0.0"
+kong_version: "1.2.0"
 
+kong_install_method: package #source
 kong_nginx_template: default_nginx.template
 
 kong_admin_http: "0.0.0.0:8001"
