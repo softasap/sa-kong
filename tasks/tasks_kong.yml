@@ -62,7 +62,7 @@
           apt_repository:
             repo: "deb https://kong.bintray.com/kong-deb {{ ansible_distribution_release }} main"
             state: present
-          filename: kong
+            filename: kong
           become: true
           when: kong_check_deb.rc == 1
           tags:
