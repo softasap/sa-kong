@@ -12,5 +12,22 @@
 
   roles:
      - {
-        role: "sa-kong"
+       role: "sa_postgres",
+       postgresql_version: 9.6,
+       option_create_app_user: true,
+       postgresql_listen_addresses: "127.0.0.1",
+       db_host: localhost,
+       db_user: kong,
+       db_password: kong,
+       db_name: kong,
+       db_user_role: "CREATEDB,NOSUPERUSER"
+       }
+     - {
+        role: "sa-kong",
+        kong_db: postgres,
+        kong_pg_host: "127.0.0.1",
+        kong_pg_port: 5432,
+        kong_pg_user: kong,
+        kong_pg_password: kong,
+        kong_pg_database: kong
        }

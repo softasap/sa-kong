@@ -266,6 +266,15 @@
     tags:
      - kong
 
+  - name: Kong | Bootstrap migrations
+    command: kong migrations bootstrap --vv
+    notify: restart kong
+    become: yes
+    ignore_errors: true
+    when: docker_test is not defined
+    tags:
+     - kong
+
   - name: Kong | Apply migrations
     command: kong migrations up
     notify: restart kong
