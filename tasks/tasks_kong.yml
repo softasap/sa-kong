@@ -117,19 +117,20 @@
 
         - name: Kong | Introduce yum repository
           yum_repository:
-            name: bintray--kong-kong-rpm
-            description: EPEL YUM repo
-            file: kong
-            baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+            name: "bintray--kong-kong-community-edition-rpm"
+            description: "bintray--kong-kong-community-edition-rpm"
+            file: kong-community-edition-rpm
+            baseurl: "https://kong.bintray.com/kong-community-edition-rpm/{{ ansible_distribution | lower }}/{{ ansible_distribution_version.split('.')[0] }}/"
             gpgcheck: no
             repo_gpgcheck: no
+            enabled: yes
           become: true
           when: kong_check_rpm.rc == 1
           tags:
             -kong
 
         - name: Kong | install package
-          yum: name=kong update_cache=yes
+          yum: name=kong-community-edition update_cache=yes
           become: true
           when: kong_check_rpm.rc == 1
           tags:
