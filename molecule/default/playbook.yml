@@ -17,6 +17,7 @@
        option_create_app_user: true,
        postgresql_listen_addresses: "127.0.0.1",
        postgres_force_change_peer_md5: true,
+       postgres_allow_password_to_dev_network: true,
        db_host: localhost,
        db_user: kong,
        db_password: kong,
