@@ -13,13 +13,19 @@ def test_hosts_file(host):
     assert f.user == 'root'
     assert f.group == 'root'
 
+
 def test_postgres_running_and_enabled(host):
     if host.system_info.distribution == 'centos':
-        assert not host.ansible("service", "name=postgresql-9.6 enabled=true state=started")['changed']
+        assert not host.ansible(
+            "service",
+            "name=postgresql-9.6 enabled=true state=started")['changed']
     if host.system_info.distribution == 'debian':
-        assert not host.ansible("service", "name=postgres enabled=true state=started")['changed']
+        assert not host.ansible(
+            "service",
+            "name=postgres enabled=true state=started")['changed']
+
 
 def test_kong_running_and_enabled(host):
-    assert not host.ansible("service", "name=kong enabled=true state=started")['changed']
-
-
+    assert not host.ansible(
+        "service",
+        "name=kong enabled=true state=started")['changed']

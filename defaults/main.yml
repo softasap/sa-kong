@@ -38,7 +38,7 @@ kong_pg_database: kong
 kong_pg_user_role: "CREATEDB,SUPERUSER" #NO
 kong_pg_ssl: off
 kong_pg_ssl_verify: off
-postgresql_service_name: postgres
+postgresql_service_name: postgresql
 
 kong_pg_hba_properties:
   - {

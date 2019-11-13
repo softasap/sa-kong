@@ -269,6 +269,8 @@
 
   - name: Kong | Bootstrap migrations
     command: kong migrations bootstrap --vv --conf /etc/kong/kong.conf
+    register: migrations_run1
+    changed_when: migrations_run1.stdout is not search("Database already bootstrapped")
     notify: restart kong
     become: yes
     ignore_errors: true
@@ -278,6 +280,8 @@
 
   - name: Kong | Apply migrations
     command: kong migrations up --conf /etc/kong/kong.conf
+    register: migrations_run2
+    changed_when: migrations_run2.stdout is not search("Database is already up-to-date")
     notify: restart kong
     become: yes
     when: docker_test is not defined
@@ -290,6 +294,7 @@
       state: started
       enabled: yes
     become: yes
+    changed_when: False
     when: docker_test is not defined
     notify:
       - restart kong
