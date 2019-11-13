@@ -27,6 +27,7 @@
 
   - name: Database | force restart postgres
     service: name="{{ postgresql_service_name }}" state="restarted"
+    changed_when: False
     when: docker_test is not defined
     become: yes
     tags:
