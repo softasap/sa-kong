@@ -1,0 +1,33 @@
+---
+  - name:  Database | Get acl dependency (ansible unprivileged user operations magic)
+    apt: pkg="acl"
+    when: ansible_os_family == "Debian"
+    register: acl_result
+    until: acl_result is success
+    retries: 10
+    become: yes
+    tags:
+      - db
+
+  - name: Database | Create user
+    postgresql_user: name="{{ kong_pg_user }}" password="{{ kong_pg_password }}" role_attr_flags="{{ kong_pg_user_role }}"
+    become_user: postgres
+    become: yes
+    tags:
+      - db
+
+  - name: Database | Create db
+    postgresql_db:
+      name: "{{ kong_pg_database }}"
+      owner: "{{ kong_pg_user }}"
+    become_user: postgres
+    become: yes
+    tags:
+      - db
+
+  - name: Database | force restart postgres
+    service: name="{{ postgresql_service_name }}" state="restarted"
+    when: docker_test is not defined
+    become: yes
+    tags:
+      - db

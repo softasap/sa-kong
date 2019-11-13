@@ -268,7 +268,7 @@
      - kong
 
   - name: Kong | Bootstrap migrations
-    command: kong migrations bootstrap --vv
+    command: kong migrations bootstrap --vv --conf /etc/kong/kong.conf
     notify: restart kong
     become: yes
     ignore_errors: true
@@ -277,7 +277,7 @@
      - kong
 
   - name: Kong | Apply migrations
-    command: kong migrations up
+    command: kong migrations up --conf /etc/kong/kong.conf
     notify: restart kong
     become: yes
     when: docker_test is not defined
