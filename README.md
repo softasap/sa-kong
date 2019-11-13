@@ -91,15 +91,13 @@ Postgres backend
 pg_hba.conf after modifications will look similar to
 
 ```
-# Database administrative login by Unix domain socket
 local   all             postgres                                peer
 
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
 # "local" is for Unix domain socket connections only
 local   all             all                                     md5
-local   all             all                                     md5
-local   all             all                                     peer
+# local   all             all                                     peer
 # IPv4 local connections:
 host    all             all             127.0.0.1/32            password
 host    all             all             127.0.0.1/32            md5
