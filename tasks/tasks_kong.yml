@@ -117,10 +117,10 @@
 
         - name: Kong | Introduce yum repository
           yum_repository:
-            name: "bintray--kong-kong-community-edition-rpm"
-            description: "bintray--kong-kong-community-edition-rpm"
-            file: kong-community-edition-rpm
-            baseurl: "https://kong.bintray.com/kong-community-edition-rpm/{{ ansible_distribution | lower }}/{{ ansible_distribution_version.split('.')[0] }}/"
+            name: "bintray--kong-rpm"
+            description: "bintray--kong-rpm"
+            file: kong-rpm
+            baseurl: "https://kong.bintray.com/kong-rpm/{{ ansible_distribution | lower }}/{{ ansible_distribution_version.split('.')[0] }}/"
             gpgcheck: no
             repo_gpgcheck: no
             enabled: yes
@@ -130,7 +130,7 @@
             -kong
 
         - name: Kong | install package
-          yum: name=kong-community-edition update_cache=yes
+          yum: name=kong update_cache=yes
           become: true
           when: kong_check_binary is failed
           tags:
