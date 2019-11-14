@@ -2,7 +2,7 @@
 [Unit]
 Description=Kong API Gateway
 After=network.target {{ 'postgresql.service'if kong_pg_host == "127.0.0.1" else '' }}
-Requires={{ 'postgresql.service'if kong_pg_host == "127.0.0.1" else '' }}
+Requires={{ postgresql_service_name+'.service'if kong_pg_host == "127.0.0.1" else '' }}
 
 [Service]
 ExecStart=/usr/local/bin/kong start --nginx-conf=/etc/kong/{{ kong_nginx_template }}

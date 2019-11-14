@@ -16,7 +16,7 @@
         tags:
           -kong
 
-      - name: Kong | Check if package is installed
+      - name: Kong | Check if package is installed (debian)
         command: dpkg-query -W kong
         register: kong_check_deb
         become: yes
@@ -82,12 +82,12 @@
 
   - block:
 
-      - name: Kong | Check if package is installed
-        command: rpm -q kong
-        register: kong_check_rpm
+      - name: Kong | Check if package is installed (centos)
+        command: test -x /usr/local/bin/kong
+        register: kong_check_binary
+        ignore_errors: true
+        changed_when: False
         become: yes
-        failed_when: kong_check_rpm.rc > 1
-        changed_when: kong_check_rpm.rc == 1
         tags:
           -kong
           -skip_ansible_lint
@@ -98,7 +98,7 @@
           get_url:
             url="{{ kong_dist_url_centos }}"
             dest="/tmp/kong.rpm"
-          when: kong_check_rpm.rc == 1
+          when: kong_check_binary is failed
           tags:
             -kong
 
@@ -108,7 +108,7 @@
             name: /tmp/kong.rpm
             state: present
           become: true
-          when: kong_check_rpm.rc == 1
+          when: kong_check_binary is failed
           tags:
             -kong
         when: kong_install_method is defined and kong_install_method == "source"
@@ -125,14 +125,14 @@
             repo_gpgcheck: no
             enabled: yes
           become: true
-          when: kong_check_rpm.rc == 1
+          when: kong_check_binary is failed
           tags:
             -kong
 
         - name: Kong | install package
           yum: name=kong-community-edition update_cache=yes
           become: true
-          when: kong_check_rpm.rc == 1
+          when: kong_check_binary is failed
           tags:
             -kong
 
@@ -145,12 +145,12 @@
 
       - block:
 
-        - name: Kong | Check if package is installed
-          command: rpm -q kong
-          register: kong_check_rpm
+        - name: Kong | Check if package is installed (fedora)
+          command: test -x /usr/local/bin/kong
+          register: kong_check_binary
+          ignore_errors: true
+          changed_when: False
           become: yes
-          failed_when: kong_check_rpm.rc > 1
-          changed_when: kong_check_rpm.rc == 1
           tags:
             -kong
             -skip_ansible_lint
@@ -159,7 +159,7 @@
           get_url:
             url="{{ kong_dist_url_rhel7 }}"
             dest="/tmp/kong.rpm"
-          when: kong_check_rpm.rc == 1
+          when: kong_check_binary is failed
           tags:
             -kong
 
@@ -168,7 +168,7 @@
             name: /tmp/kong.rpm
             state: present
           become: true
-          when: kong_check_rpm.rc == 1 and ansible_distribution_major_version < 26
+          when: kong_check_binary is failed and ansible_distribution_major_version < 26
           tags:
             -kong
 
@@ -177,7 +177,7 @@
             name: /tmp/kong.rpm
             state: present
           become: true
-          when: kong_check_rpm.rc == 1 and ansible_distribution_major_version > 25
+          when: kong_check_binary is failed and ansible_distribution_major_version > 25
           tags:
             -kong
         when: 1==1 #kong_install_method is defined and kong_install_method == "source"
@@ -242,7 +242,6 @@
     notify:
       - restart kong
 
-
   - name: Kong | Patch default settings /etc/kong/kong.conf
     lineinfile:
       dest: /etc/kong/kong.conf
@@ -268,9 +267,9 @@
      - kong
 
   - name: Kong | Bootstrap migrations
-    command: kong migrations bootstrap --vv --conf /etc/kong/kong.conf
+    command: /usr/local/bin/kong migrations bootstrap --vv --conf /etc/kong/kong.conf
     register: migrations_run1
-    changed_when: migrations_run1.stdout is not search("Database already bootstrapped")
+    changed_when: not (migrations_run1.stdout is search("atabase already bootstrapped"))
     notify: restart kong
     become: yes
     ignore_errors: true
@@ -278,20 +277,25 @@
     tags:
      - kong
 
+  - debug: var="migrations_run1"
+
   - name: Kong | Apply migrations
-    command: kong migrations up --conf /etc/kong/kong.conf
+    command: /usr/local/bin/kong migrations up --conf /etc/kong/kong.conf
     register: migrations_run2
-    changed_when: migrations_run2.stdout is not search("Database is already up-to-date")
+    changed_when: not (migrations_run2.stdout is search("atabase is already up-to-date"))
     notify: restart kong
     become: yes
     when: docker_test is not defined
     tags:
      - kong
 
+  - debug: var="migrations_run2"
+
   - name: Kong | Ensure Kong is running
-    service:
-      name: kong
+    systemd:
       state: started
+      daemon_reload: yes
+      name: kong
       enabled: yes
     become: yes
     changed_when: False

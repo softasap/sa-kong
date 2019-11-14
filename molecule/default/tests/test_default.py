@@ -93,6 +93,7 @@ def test_kong_keyauth_plugin_can_be_associated(host):
     assert kong_result.rc == 0
     assert "HTTP/1.1 201 Created" in kong_result.stdout
 
+
 def test_kong_keyauth_plugin_properly_configured(host):
     kong_cmd = """
         curl -i -X GET \
@@ -152,8 +153,10 @@ def test_kong_route_can_be_deleted(host):
     print(kong_result)
     assert kong_result.rc == 0
     route_id = routes['data'][0]['id']
-    delete_service_cmd="curl -X DELETE http://localhost:8001/services/example-service/routes/"+route_id
-    kong_result = host.run(service_cmd)
+    delete_service_cmd = """
+    curl -X DELETE \
+    http://localhost:8001/services/example-service/routes/""" + route_id
+    kong_result = host.run(delete_service_cmd)
     assert "Not found" not in kong_result.stdout
 
 

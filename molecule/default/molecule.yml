@@ -65,7 +65,7 @@ platforms:
      memory: 4096
      cpus: 2
 
-    # interfaces:
+      # interfaces:
     #   - auto_config: true
     #     network_name: private_network
     #     type: dhcp
