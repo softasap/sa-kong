@@ -38,7 +38,11 @@ kong_pg_database: kong
 kong_pg_user_role: "CREATEDB,SUPERUSER" #NO
 kong_pg_ssl: off
 kong_pg_ssl_verify: off
+
+postgresql_base_version: "9.6"
+postgresql_version: "9.6"
 postgresql_service_name: postgresql
+postgresql_config_path: "/etc/postgresql/{{ postgresql_version }}/main"
 
 kong_pg_hba_properties:
   - {

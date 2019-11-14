@@ -156,8 +156,8 @@ def test_kong_route_can_be_deleted(host):
     delete_service_cmd = """
     curl -X DELETE \
     http://localhost:8001/services/example-service/routes/""" + route_id
-    kong_result = host.run(delete_service_cmd)
-    assert "Not found" not in kong_result.stdout
+    route_delete_result = host.run(delete_service_cmd)
+    assert "Not found" not in route_delete_result.stdout
 
 
 def test_kong_consumer_can_be_deleted(host):

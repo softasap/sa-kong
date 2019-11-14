@@ -55,15 +55,15 @@ ansible:
   #   pipelining: True
 
 platforms:
-  #  - name: bionic
-  #    box: ubuntu/bionic64
-  #    memory: 4096
-  #    cpus: 2
-
-   - name: centos7
-     box: centos/7
+   - name: bionic
+     box: ubuntu/bionic64
      memory: 4096
      cpus: 2
+
+  #  - name: centos7
+  #    box: centos/7
+  #    memory: 4096
+  #    cpus: 2
 
       # interfaces:
     #   - auto_config: true
