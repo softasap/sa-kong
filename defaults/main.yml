@@ -80,6 +80,6 @@ kong_plugins:
     - udp-log
 
 kong_dist_url_debian: "https://bintray.com/kong/kong-deb/download_file?file_path=kong-{{ kong_version }}.{{ ansible_distribution_release }}.amd64.deb"
-kong_dist_url_centos: "https://kong.bintray.com/kong-rpm/centos/7/:kong-{{ kong_version }}.el7.amd64.rpm"
-kong_dist_url_rhel7:  "https://kong.bintray.com/kong-rpm/rhel/7/:kong-{{ kong_version }}.rhel7.amd64.rpm"
+kong_dist_url_centos: "https://kong.bintray.com/kong-rpm/centos/7/kong-{{ kong_version }}.el7.amd64.rpm"
+kong_dist_url_rhel7:  "https://kong.bintray.com/kong-rpm/rhel/7/kong-{{ kong_version }}.rhel7.amd64.rpm"
 
