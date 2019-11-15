@@ -3,14 +3,31 @@
   hosts: all
 
   pre_tasks:
-    - debug: msg="Pre tasks section for {{ansible_host}}"
+    - debug: msg="Pre tasks section for {{ ansible_host }}"
 
-    - set_fact:
+    - name: set default facts
+      set_fact:
         remote_ip_address: "{{ ansible_host }}"
 
-    - include_vars: "playbook_vars.yml"
+    - name: Include default vars
+      include_vars: "playbook_vars.yml"
 
   roles:
      - {
-        role: "sa-kong"
+       role: "sa_postgres",
+       postgresql_version: 9.6,
+       option_create_app_user: false,
+       postgresql_listen_addresses: "127.0.0.1",
+       postgres_force_change_peer_md5: true,
+       postgres_allow_password_to_dev_network: true
+#       pg_hba_properties: "{{ kong_pg_hba_properties }}"
+       }
+     - {
+        role: "sa-kong",
+        kong_db: postgres,
+        kong_pg_host: "127.0.0.1",
+        kong_pg_port: 5432,
+        kong_pg_user: kong,
+        kong_pg_password: kong,
+        kong_pg_database: kong
        }

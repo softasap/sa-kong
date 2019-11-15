@@ -2,8 +2,9 @@
 # defaults file for sa-kong
 
 role_dir: "{{role_path}}"
-kong_version: "1.0.0"
+kong_version: "1.4.0"
 
+kong_install_method: package #source
 kong_nginx_template: default_nginx.template
 
 kong_admin_http: "0.0.0.0:8001"
@@ -28,13 +29,33 @@ kong_default_properties:
 kong_properties: []
 
 kong_db: postgres
+
 kong_pg_host: "127.0.0.1"
 kong_pg_port: 5432
 kong_pg_user: kong
 kong_pg_password: kong
 kong_pg_database: kong
+kong_pg_user_role: "CREATEDB,SUPERUSER" #NO
 kong_pg_ssl: off
 kong_pg_ssl_verify: off
+
+postgresql_base_version: "9.6"
+postgresql_version: "9.6"
+postgresql_service_name: postgresql
+postgresql_config_path: "/etc/postgresql/{{ postgresql_version }}/main"
+
+kong_pg_hba_properties:
+  - {
+      regexp: "^#?(\\s*)host\\tall\\tall\\t127.0.0.1/32\\tident$",
+      line: "host    all             all             127.0.0.1/32            ident",
+      insertafter: "^# IPv4 local connections"
+    }
+  - {
+      regexp: "^#?(\\s*)host\\tall\\tall\\t127.0.0.1/32\\tpassword$",
+      line: "host    all             all             127.0.0.1/32            password",
+      insertafter: "^# IPv4 local connections"
+    }
+
 
 # https://konghq.com/plugins/
 kong_plugins:
@@ -58,6 +79,7 @@ kong_plugins:
     - tcp-log
     - udp-log
 
-kong_dist_url_debian: "https://bintray.com/kong/kong-community-edition-deb/download_file?file_path=dists/kong-community-edition-{{ kong_version }}.{{ ansible_distribution_release }}.all.deb"
-kong_dist_url_centos: "https://dl.bintray.com/kong/kong-community-edition-rpm/rhel/7/kong-community-edition-{{ kong_version }}.rhel7.noarch.rpm"
-kong_dist_url_rhel7: "https://dl.bintray.com/kong/kong-community-edition-rpm/rhel/7/kong-community-edition-{{ kong_version }}.rhel7.noarch.rpm"
+kong_dist_url_debian: "https://bintray.com/kong/kong-deb/download_file?file_path=kong-{{ kong_version }}.{{ ansible_distribution_release }}.amd64.deb"
+kong_dist_url_centos: "https://kong.bintray.com/kong-rpm/centos/7/kong-{{ kong_version }}.el7.amd64.rpm"
+kong_dist_url_rhel7:  "https://kong.bintray.com/kong-rpm/rhel/7/kong-{{ kong_version }}.rhel7.amd64.rpm"
+

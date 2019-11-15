@@ -1,0 +1,99 @@
+---
+  - name:  Database | Get acl dependency (ansible unprivileged user operations magic)
+    apt: pkg="acl"
+    when: ansible_os_family == "Debian"
+    register: acl_result
+    until: acl_result is success
+    retries: 10
+    become: yes
+    tags:
+      - db
+
+  - name: Database | Create user
+    postgresql_user: name="{{ kong_pg_user }}" password="{{ kong_pg_password }}" role_attr_flags="{{ kong_pg_user_role }}"
+    become_user: postgres
+    become: yes
+    tags:
+      - db
+
+  - name: Database | Create db
+    postgresql_db:
+      name: "{{ kong_pg_database }}"
+      owner: "{{ kong_pg_user }}"
+    become_user: postgres
+    become: yes
+    tags:
+      - db
+
+  - name: Database | Change peer authentication to md5 (1/2) - comment peer
+    lineinfile:
+      dest: "{{ postgresql_config_path }}/pg_hba.conf"
+      regexp: (^(\s+)?local\s+all\s+all\s+peer)$
+      line: '# \1'
+      backrefs: yes
+      state: present
+      insertafter: "^# \"local\" is for Unix domain socket connections only"
+    become: yes
+    tags:
+      - db
+
+  - name: Database | Change peer authentication to md5 (2/2) - add md5
+    lineinfile:
+      dest: "{{ postgresql_config_path }}/pg_hba.conf"
+      insertafter: "^# \"local\" is for Unix domain socket connections only"
+      line: "local   all             all                                     md5"
+      state: present
+    become: yes
+    tags:
+      - db
+
+  - name: Database | Change peer authentication to md5 (2/2) - add password
+    lineinfile:
+      dest: "{{ postgresql_config_path }}/pg_hba.conf"
+      line: "host    all             all             127.0.0.1/32            password"
+      insertafter: "^# IPv4 local connections"
+      state: present
+    become: yes
+    tags:
+      - db
+
+
+  - name: Database | Make postgres user to use peer on local auth
+    lineinfile:
+      dest: "{{ postgresql_config_path }}/pg_hba.conf"
+      line: "local   all             postgres                                peer"
+      insertafter: "^# TYPE  DATABASE"
+      state: present
+    become: yes
+    tags:
+      - db
+
+  - name: Database | Comment ident rules IPv4
+    lineinfile:
+      dest: "{{ postgresql_config_path }}/pg_hba.conf"
+      regexp: (^(\s+)?host\s+all\s+all\s+.*\sident)$
+      line: '# \1'
+      backrefs: yes
+      state: present
+    become: yes
+    tags:
+      - db
+
+  - name: Database | Comment ident rules IPv6
+    lineinfile:
+      dest: "{{ postgresql_config_path }}/pg_hba.conf"
+      regexp: (^(\s+)?host\s+all\s+all\s+.*\sident)$
+      line: '# \1'
+      backrefs: yes
+      state: present
+    become: yes
+    tags:
+      - db
+
+  - name: Database | force restart postgres
+    service: name="{{ postgresql_service_name }}" state="restarted"
+    changed_when: False
+    when: docker_test is not defined
+    become: yes
+    tags:
+      - db

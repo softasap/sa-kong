@@ -1,3 +1,20 @@
 ---
 # tasks file for sa-kong
-  - include: tasks_kong.yml
+
+  - name: Include provider related vars
+    include_vars: "{{ item }}"
+    with_first_found:
+      - files:
+          - "{{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml" # Debian like
+          - "{{ ansible_os_family }}-{{ ansible_distribution_version.split('.')[0] }}.yml" # Other
+          - "{{ ansible_distribution }}"
+          - "{{ ansible_os_family }}"
+          - "main.yml"
+        skip: true
+    tags:
+      - always
+
+  - include_tasks: tasks_kong_postgres.yml
+    when: kong_db == "postgres" and docker_test is not defined
+
+  - include_tasks: tasks_kong.yml

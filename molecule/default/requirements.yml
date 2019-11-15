@@ -1,0 +1,5 @@
+#- src: softasap.sa-postgres
+#  name: sa_postgres
+- src: https://github.com/softasap/sa-postgres.git
+  version: develop
+  name: sa_postgres
