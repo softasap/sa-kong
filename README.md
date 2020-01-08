@@ -249,6 +249,25 @@ host    all             all             ::1/128                 md5
 #host    replication     postgres        ::1/128                 md5
 ```
 
+
+Third party references
+----------------------
+
+### Dashboards
+
+```
+Konga             https://github.com/pantsel/konga              (Kong > 1)
+Kong-Dashboard    https://github.com/PGBI/kong-dashboard        (Kong > 0.9)
+```
+
+## Declarative config tools
+
+```
+kongfig           https://github.com/mybuilder/kongfig          (Kong < 1)
+Deck              https://github.com/hbagdi/deck                (Kong >= 1)
+```
+
+
 Usage with ansible galaxy workflow
 ----------------------------------
 
