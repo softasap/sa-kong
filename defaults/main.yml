@@ -2,7 +2,7 @@
 # defaults file for sa-kong
 
 role_dir: "{{role_path}}"
-kong_version: "1.4.0"
+kong_version: "2.0.1"
 
 kong_install_method: package #source
 kong_nginx_template: default_nginx.template
@@ -11,6 +11,31 @@ kong_admin_http: "0.0.0.0:8001"
 kong_admin_https: "127.0.0.1:8444"
 kong_proxy_http: "0.0.0.0:8000"
 kong_proxy_https: "0.0.0.0:8443"
+
+kong_activated_plugins: "bundled,oidc"
+# # https://konghq.com/plugins/
+#     - acl
+#     - basic-auth
+#     - cors
+#     - file-log
+#     - hmac-auth
+#     - http-log
+#     - ip-restriction
+#     - jwt
+#     - key-auth
+#     - galileo
+#     - oauth2
+#     - rate-limiting
+#     - response-ratelimiting
+#     - response-transformer
+#     - request-size-limiting
+#     - request-transformer
+#     - ssl
+#     - tcp-log
+#     - udp-log
+
+kong_luarocks_plugins:
+  - kong-oidc
 
 kong_default_properties:
   - {regexp: "^#?proxy_listen  *", line: "proxy_listen = {{kong_proxy_http}}"}
@@ -25,6 +50,7 @@ kong_default_properties:
   - {regexp: "^#?pg_database  *", line: "pg_database = {{kong_pg_database}}"}
   - {regexp: "^#?pg_ssl  *", line: "pg_ssl = {{kong_pg_ssl}}"}
   - {regexp: "^#?pg_ssl_verify  *", line: "pg_ssl_verify = {{kong_pg_ssl_verify}}"}
+  - {regexp: "^#?plugins =*", line: "plugins = {{ kong_activated_plugins }}"}
 
 kong_properties: []
 
@@ -56,28 +82,6 @@ kong_pg_hba_properties:
       insertafter: "^# IPv4 local connections"
     }
 
-
-# https://konghq.com/plugins/
-kong_plugins:
-    - acl
-    - basic-auth
-    - cors
-    - file-log
-    - hmac-auth
-    - http-log
-    - ip-restriction
-    - jwt
-    - key-auth
-    - galileo
-    - oauth2
-    - rate-limiting
-    - response-ratelimiting
-    - response-transformer
-    - request-size-limiting
-    - request-transformer
-    - ssl
-    - tcp-log
-    - udp-log
 
 kong_dist_url_debian: "https://bintray.com/kong/kong-deb/download_file?file_path=kong-{{ kong_version }}.{{ ansible_distribution_release }}.amd64.deb"
 kong_dist_url_centos: "https://kong.bintray.com/kong-rpm/centos/7/kong-{{ kong_version }}.el7.amd64.rpm"

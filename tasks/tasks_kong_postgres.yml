@@ -9,6 +9,29 @@
     tags:
       - db
 
+  - name: For troubleshouting, output ansible_python_version
+    debug: var="ansible_python_version"
+
+  - name: Install psycopg2(2)
+    package:
+       name:
+         - python-psycopg2
+       state: present
+    when: ansible_python_version is version_compare('3','<')
+    become: yes
+    tags:
+      - db
+
+  - name: Install psycopg2(3)
+    package:
+       name:
+         - python3-psycopg2
+       state: present
+    when: ansible_python_version is version_compare('3','>=')
+    become: yes
+    tags:
+      - db
+
   - name: Database | Create user
     postgresql_user: name="{{ kong_pg_user }}" password="{{ kong_pg_password }}" role_attr_flags="{{ kong_pg_user_role }}"
     become_user: postgres
