@@ -12,6 +12,7 @@
             - apt-transport-https #package
             - curl
             - lsb-core
+            - unzip
         become: yes
         tags:
           -kong
@@ -307,6 +308,13 @@
      - kong
 
   - debug: var="migrations_run2"
+
+  - name: Kong | Install additional luarocks plugins
+    shell: luarocks install {{ item }}
+    with_items: "{{ kong_luarocks_plugins | default() }}"
+    become: yes
+    tags:
+     - kong
 
   - name: Kong | Ensure Kong is running
     systemd:

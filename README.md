@@ -57,7 +57,19 @@ Advanced:
   roles:
     - {
         role: "sa-kong",
-        kong_version: 0.12.1
+        kong_version: 2.0.1,
+        kong_activated_plugins: "bundled,oidc",
+        kong_luarocks_plugins:
+          - kong-oidc
+        kong_admin_http: "0.0.0.0:8001",
+        kong_admin_https: "127.0.0.1:8444",
+        kong_proxy_http: "0.0.0.0:8000",
+        kong_proxy_https: "0.0.0.0:8443",
+        kong_pg_host: "127.0.0.1",
+        kong_pg_port: 5432,
+        kong_pg_user: kong,
+        kong_pg_password: kong,
+        kong_pg_database: kong
       }
 ```
 
