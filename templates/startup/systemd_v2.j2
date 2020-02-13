@@ -1,0 +1,15 @@
+
+[Unit]
+Description=Kong API Gateway
+After=network.target {{ 'postgresql.service'if kong_pg_host == "127.0.0.1" else '' }}
+Requires={{ postgresql_service_name+'.service'if kong_pg_host == "127.0.0.1" else '' }}
+
+[Service]
+ExecStart=/usr/local/bin/kong start -c /etc/kong/kong.conf
+ExecStop=/usr/local/bin/kong stop
+ExecReload=/usr/local/bin/kong reload -c /etc/kong/kong.conf
+Type=forking
+PIDFile=/usr/local/kong/pids/nginx.pid
+
+[Install]
+WantedBy=default.target

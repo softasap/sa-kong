@@ -129,6 +129,12 @@
           tags:
             -kong
 
+        - name: Kong | Notify debug hint for baseurl
+          debug: msg="https://kong.bintray.com/kong-rpm/{{ ansible_distribution | lower }}/{{ ansible_distribution_version.split('.')[0] }}/"
+          when: kong_check_binary is failed
+          tags:
+            -kong
+
         - name: Kong | install package
           yum: name=kong update_cache=yes
           become: true
@@ -213,18 +219,29 @@
       dest: /etc/systemd/system/kong.service
       mode: 0755
       src: "{{ role_dir }}/templates/startup/systemd.j2"
-    when: ansible_service_mgr == 'systemd'
+    when: ansible_service_mgr == 'systemd' and kong_version is version_compare('2', '<')
     become: yes
     tags:
       -kong
 
-  - name: Kong | default nginx config
+  - name: Kong | systemd upstart
+    template:
+      dest: /etc/systemd/system/kong.service
+      mode: 0755
+      src: "{{ role_dir }}/templates/startup/systemd_v2.j2"
+    when: ansible_service_mgr == 'systemd' and kong_version is version_compare('2', '>=')
+    become: yes
+    tags:
+      -kong
+
+  - name: Kong | default nginx config (pre v2)
     template:
       src: "{{ role_dir }}/templates/kong/default_nginx.template.j2"
       dest: /etc/kong/default_nginx.template
       group: root
       mode: 0644
       owner: root
+    when: kong_version is version_compare('2', '<')
     become: yes
     notify:
       - restart kong
