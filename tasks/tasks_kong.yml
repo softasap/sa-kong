@@ -184,7 +184,7 @@
             name: /tmp/kong.rpm
             state: present
           become: true
-          when: kong_check_binary is failed and ansible_distribution_major_version < 26
+          when: (kong_check_binary is failed) and (ansible_distribution_major_version|int < 26)
           tags:
             -kong
 
@@ -193,7 +193,7 @@
             name: /tmp/kong.rpm
             state: present
           become: true
-          when: kong_check_binary is failed and ansible_distribution_major_version > 25
+          when: (kong_check_binary is failed) and (ansible_distribution_major_version|int > 25)
           tags:
             -kong
         when: 1==1 #kong_install_method is defined and kong_install_method == "source"
