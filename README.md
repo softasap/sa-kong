@@ -280,6 +280,26 @@ Deck              https://github.com/hbagdi/deck                (Kong >= 1)
 ```
 
 
+Known issues
+------------
+
+### ulimit 1024
+
+If you are using Ubuntu or Debian, go to the file: /etc/security/limits.conf and add the line (at the end)
+
+```
+* soft nofile 4096
+```
+
+Save and test it by executing the command;
+
+```sh
+ulimit -n 4096
+```
+
+Restart Kong and check if you get the warning (you may need to logout or restart the server to take effect)
+
+
 Usage with ansible galaxy workflow
 ----------------------------------
 
