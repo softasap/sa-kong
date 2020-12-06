@@ -27,7 +27,7 @@
           -kong
 
       - name: Kong | Check if package is installed (debian)
-        command: dpkg-query -W kong
+        command: dpkg -s kong | grep installed
         register: kong_check_deb
         become: yes
         failed_when: kong_check_deb.rc > 1
