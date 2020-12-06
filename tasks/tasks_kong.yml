@@ -27,11 +27,12 @@
           -kong
 
       - name: Kong | Check if package is installed (debian)
-        command: dpkg -s kong | grep installed
+        shell: dpkg-query -W -f'${Status}' "kong" 2>/dev/null | grep -q "ok installed"
         register: kong_check_deb
         become: yes
-        failed_when: kong_check_deb.rc > 1
-        changed_when: kong_check_deb.rc == 1
+        failed_when: kong_check_deb.rc > 0
+        changed_when: never
+        ignore_errors: yes
         tags:
           -kong
 

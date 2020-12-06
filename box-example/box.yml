@@ -9,8 +9,8 @@
   pre_tasks:
     - debug: msg="Pre tasks section"
 
-    - name: ANSIBLE PYTHON | install python 2
-      raw: test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)
+    - name: ANSIBLE PYTHON | install python if absent
+      raw: test -e /usr/bin/python || test -e /usr/bin/python3 || (apt -qqy update && apt install -qy python-minimal)
       become: yes
 
     - name:  UNPRIVILEGED USERS | Get acl dependency (ansible unprivileged user operations magic)
