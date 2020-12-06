@@ -217,7 +217,7 @@
     template:
       dest: /etc/init.d/kong
       mode: 0751
-      src: "{{ role_dir }}/templates/startup/initd.j2"
+      src: "{{ role_path }}/templates/startup/initd.j2"
     when: ansible_service_mgr == 'upstart'
     become: yes
     tags:
@@ -228,7 +228,7 @@
     template:
       dest: /etc/systemd/system/kong.service
       mode: 0755
-      src: "{{ role_dir }}/templates/startup/systemd.j2"
+      src: "{{ role_path }}/templates/startup/systemd.j2"
     when: ansible_service_mgr == 'systemd' and kong_version is version_compare('2', '<')
     become: yes
     tags:
@@ -238,7 +238,7 @@
     template:
       dest: /etc/systemd/system/kong.service
       mode: 0755
-      src: "{{ role_dir }}/templates/startup/systemd_v2.j2"
+      src: "{{ role_path }}/templates/startup/systemd_v2.j2"
     when: ansible_service_mgr == 'systemd' and kong_version is version_compare('2', '>=')
     become: yes
     tags:
@@ -246,7 +246,7 @@
 
   - name: Kong | default nginx config (pre v2)
     template:
-      src: "{{ role_dir }}/templates/kong/default_nginx.template.j2"
+      src: "{{ role_path }}/templates/kong/default_nginx.template.j2"
       dest: /etc/kong/default_nginx.template
       group: root
       mode: 0644
@@ -322,6 +322,16 @@
     shell: luarocks install {{ item }}
     with_items: "{{ kong_luarocks_plugins | default() }}"
     become: yes
+    tags:
+     - kong
+
+  - name: Kong | Finalize migrations
+    command: /usr/local/bin/kong migrations finish --conf /etc/kong/kong.conf
+    register: migrations_run3
+    changed_when: not (migrations_run2.stdout is search("atabase is already up-to-date"))
+    notify: restart kong
+    become: yes
+    when: docker_test is not defined
     tags:
      - kong
 
