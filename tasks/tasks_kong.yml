@@ -208,6 +208,7 @@
       state: directory
       owner: www-data
       group: www-data
+      mode: 0755
     ignore_errors: true
     become: yes
     when: docker_test is not defined
@@ -325,6 +326,9 @@
     register: rocks
     changed_when: no
     check_mode: no
+    tags:
+     - kong
+     - skip_ansible_lint
 
   - name: Kong | Install additional luarocks plugins
     shell: luarocks install {{ item }}
@@ -333,6 +337,7 @@
     become: yes
     tags:
      - kong
+     - skip_ansible_lint
 
   - name: Kong | Finalize migrations
     command: /usr/local/bin/kong migrations finish --conf /etc/kong/kong.conf
