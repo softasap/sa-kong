@@ -176,3 +176,23 @@ def test_kong_service_can_be_deleted(host):
     service_result = host.run(service_cmd)
     print(service_result)
     assert service_result.rc == 0
+
+
+def test_kong_plugin_upstream_auth_basic_installed(host):
+    check_plugin_present_cmd = """
+        luarocks list | grep kong-plugin-upstream-auth-basic
+    """
+    cmd_result = host.run(check_plugin_present_cmd)
+    print(cmd_result)
+    assert cmd_result.rc == 0
+    assert "kong-plugin-upstream-auth-basic" in cmd_result.stdout
+
+
+def test_kong_plugin_sa_jwt_claims_validate_installed(host):
+    check_plugin_present_cmd = """
+        luarocks list | grep kong-plugin-sa-jwt-claims-validate
+    """
+    cmd_result = host.run(check_plugin_present_cmd)
+    print(cmd_result)
+    assert cmd_result.rc == 0
+    assert "kong-plugin-sa-jwt-claims-validate" in cmd_result.stdout

@@ -1,7 +1,7 @@
 ---
 # defaults file for sa-kong
 
-kong_version: "2.2.1"
+kong_version: "2.0.4"
 
 kong_install_method: package #source
 kong_nginx_template: default_nginx.template
@@ -35,6 +35,8 @@ kong_activated_plugins: "bundled,oidc"
 
 kong_luarocks_plugins:
   - kong-oidc
+  - kong-plugin-sa-jwt-claims-validate
+  - kong-plugin-upstream-auth-basic
 
 kong_default_properties:
   - {regexp: "^#?proxy_listen  *", line: "proxy_listen = {{kong_proxy_http}}"}
@@ -82,7 +84,8 @@ kong_pg_hba_properties:
     }
 
 
-kong_dist_url_debian: "https://bintray.com/kong/kong-deb/download_file?file_path=kong-{{ kong_version }}.{{ ansible_distribution_release }}.amd64.deb"
-kong_dist_url_centos: "https://kong.bintray.com/kong-rpm/centos/7/kong-{{ kong_version }}.el7.amd64.rpm"
-kong_dist_url_rhel7:  "https://kong.bintray.com/kong-rpm/rhel/7/kong-{{ kong_version }}.rhel7.amd64.rpm"
-
+debtray: "https://bintray.com/kong/kong-deb"
+rpmtray: "https://kong.bintray.com/kong-rpm"
+kong_dist_url_debian: "{{ debtray }}/download_file?file_path=kong-{{ kong_version }}.{{ ansible_distribution_release }}.amd64.deb"
+kong_dist_url_centos: "{{ rpmtray }}/centos/7/kong-{{ kong_version }}.el7.amd64.rpm"
+kong_dist_url_rhel7:  "{{ rpmtray }}/rhel/7/kong-{{ kong_version }}.rhel7.amd64.rpm"

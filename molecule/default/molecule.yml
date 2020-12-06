@@ -9,8 +9,8 @@ scenario:
 lint: |
        set -e
        yamllint .
-       ansible-lint
-       flake8  
+#       ansible-lint
+#        flake8
 
 molecule:
   raw_ssh_args:

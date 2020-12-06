@@ -79,7 +79,9 @@
             -kong
 
         - name: Kong | install package
-          apt: name=kong update_cache=yes
+          apt:
+            name: "kong={{ kong_version }}"
+            update_cache: yes
           become: true
           when: kong_check_deb.rc == 1
           tags:
@@ -130,7 +132,7 @@
             name: "bintray--kong-rpm"
             description: "bintray--kong-rpm"
             file: kong-rpm
-            baseurl: "https://kong.bintray.com/kong-rpm/{{ ansible_distribution | lower }}/{{ ansible_distribution_version.split('.')[0] }}/"
+            baseurl: "{{ rpmtray }}/{{ ansible_distribution | lower }}/{{ ansible_distribution_version.split('.')[0] }}/"
             gpgcheck: no
             repo_gpgcheck: no
             enabled: yes
@@ -140,7 +142,7 @@
             -kong
 
         - name: Kong | Notify debug hint for baseurl
-          debug: msg="https://kong.bintray.com/kong-rpm/{{ ansible_distribution | lower }}/{{ ansible_distribution_version.split('.')[0] }}/"
+          debug: msg="{{ rpmtray }}/{{ ansible_distribution | lower }}/{{ ansible_distribution_version.split('.')[0] }}/"
           when: kong_check_binary is failed
           tags:
             -kong
@@ -318,9 +320,16 @@
 
   - debug: var="migrations_run2"
 
+  - name: Kong | Get currently installed luarocks plugins
+    shell: luarocks list
+    register: rocks
+    changed_when: no
+    check_mode: no
+
   - name: Kong | Install additional luarocks plugins
     shell: luarocks install {{ item }}
     with_items: "{{ kong_luarocks_plugins | default() }}"
+    when: item not in rocks.stdout
     become: yes
     tags:
      - kong
